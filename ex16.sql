@@ -1,0 +1,1 @@
+SELECT countriesAndTerritories, dateRep, cases, deaths FROM dataset ORDER BY year, month, day;

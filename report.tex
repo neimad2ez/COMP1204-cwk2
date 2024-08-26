@@ -1,0 +1,406 @@
+% ----
+% COMP1204 CW1 Report Document
+% ----
+\documentclass[]{article}
+
+% Reduce the margin size, as they're quite big by default
+\usepackage[margin=1in]{geometry}
+
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{beige}{rgb}{0.98, 0.98, 0.88}
+
+\lstdefinestyle{code}{
+    backgroundcolor=\color{beige},   
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\title{COMP1204: Data Management \\ Coursework Two: COVID-19 Cases Database }
+% Update these!
+\author{Damien Ta \\ 34830294}
+
+% Actually start the report content
+\begin{document}
+
+% Add title, author and date info
+\maketitle
+
+\section{The Relational Model}
+
+\subsection{EX1}
+
+\begin{tabular}{ |c|c| }
+\hline
+\textbf{Relation} & \textbf{Type} \\
+\hline
+dateRep - day & One-One\\
+dateRep - month & One-One\\
+dateRep - year & One-One\\
+dateRep - cases & Many-Many\\
+dateRep - deaths & Many-Many\\
+dateRep - countriesAndTerritories & Many-Many\\
+dateRep - geoId & Many-Many\\
+dateRep - countryterritoryCode & Many-Many\\
+dateRep - popData2020 & Many-One\\
+dateRep - continentExp & Many-One\\
+day - month & Many-Many\\
+day - year & Many-Many\\
+day - cases & Many-Many\\
+day - deaths & Many-Many\\
+day - countriesAndTerritories & Many-Many\\
+day - geoId & Many-Many\\
+day - countryterritoryCode & Many-Many\\
+day - popData2020 & Many-Many\\
+day - continentExp & Many-One\\
+month - year & Many-Many\\
+month - cases & Many-Many\\
+month - deaths & Many-Many\\
+month - countriesAndTerritories & Many-Many\\
+month - geoId & Many-Many\\
+month - countryterritoryCode & Many-Many\\
+month - popData2020 & Many-Many\\
+month - continentExp & Many-One\\
+year - cases & Many-Many\\
+\hline
+\end{tabular}
+\quad
+\begin{tabular}{ |c|c| }
+    \hline
+    \textbf{Relation} & \textbf{Type} \\  
+    \hline
+    year - deaths & Many-Many\\
+    year - countriesAndTerritories & Many-Many\\
+    year - geoId & Many-Many\\
+    year - countryterritoryCode & Many-Many\\
+    year - popData2020 & Many-Many\\
+    year - continentExp & Many-One\\
+    cases - deaths & Many-Many\\
+    cases - countriesAndTerritories & Many-Many\\
+    cases - geoId & Many-Many\\
+    cases - countryterritoryCode & Many-Many\\
+    cases - popData2020 & Many-Many\\
+    cases - continentExp & Many-One\\  
+    deaths - countriesAndTerritories & Many-Many\\
+    deaths - geoId & Many-Many\\
+    deaths - countryterritoryCode & Many-Many\\
+    deaths - popData2020 & Many-Many\\
+    deaths - continentExp & Many-One\\  
+    countriesAndTerritories - geoId & One-One\\
+    countriesAndTerritories - countryterritoryCode & One-One\\
+    countriesAndTerritories - popData2020 & One-One\\
+    countriesAndTerritories - continentExp & Many-One\\  
+    geoId - countryterritoryCode & One-One\\
+    geoId - popData2020 & One-One\\
+    geoId - continentExp & Many-One\\  
+    countryterritoryCode - popData2020 & One-One\\
+    countryterritoryCode - continentExp & Many-One\\ 
+    popData2020 - continentExp & Many-One\\
+    \hline  
+\end{tabular}    
+
+\newpage
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ |c|c| }
+    \hline
+    \textbf{Attribute} & \textbf{Data Type}\\
+    \hline
+    dateRep & TEXT\\
+    day & INTEGER\\
+    month & INTEGER\\
+    year & INTEGER\\
+    cases & INTEGER\\
+    deaths & INTEGER\\
+    countriesAndTerritories & TEXT\\
+    geoId & TEXT\\
+    countryterritoryCode & TEXT\\
+    popData2020 & INTEGER\\
+    continentExp & TEXT\\
+    \hline
+\end{tabular}
+\caption{Data Types of each attribute}
+\end{table}
+
+\subsection{EX2}
+
+List of assumptions for the Functional Dependencies:
+
+\begin{itemize}
+    \item{countriesAndTerritories, countryterritoryCode and geoId are interchangable as they are all very similar}
+    \item{The only continent is Europe}
+    \item{Assume all populations are the same, can't add different populations to a country that already has a set population}
+    \item{Negative numbers will be included and not seen as an outlier}
+    \item{Assume there are no typos or errors}
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ |c| }
+    \hline
+    \textbf{Functional Dependency} \\
+    \hline
+        dateRep -$>$ day\\
+        dateRep -$>$ month\\
+        dateRep -$>$ year\\
+        day, month, year -$>$ dateRep\\
+        countriesAndTerritories -$>$ geoId\\
+        countriesAndTerritories -$>$ countryterritoryCode\\
+        countriesAndTerritories -$>$ popData2020\\
+        countriesAndTerritories -$>$ continentExp\\
+        dateRep, countriesAndTerritories -$>$ cases\\
+        dateRep, countriesAndTerritories -$>$ deaths\\
+        
+    \hline
+\end{tabular}
+\caption{Minimal set of Functional Dependencies}
+\end{table}
+
+\subsection{EX3}
+
+As there are no redundant attributes, the potential candidate keys list is small. We could've included candidate keys like "dateRep, geoId" or "dateRep, countryterritoryCode" but they may cause redundancy.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ |c| }
+        \hline
+        \textbf{Potential Candidate Keys} \\
+        \hline
+            dateRep, countriesAndTerritories\\
+            day, month, year, countriesAndTerritories\\
+        \hline
+    \end{tabular}
+    \caption{List of potential candidate keys}
+    \end{table}
+
+\subsection{EX4}
+
+The primary key I selected is dateRep and countriesAndTerritories. I chose them because
+dateRep includes 3 attributes day, month, year which was our other candidate key. This makes the primary key
+more simple as it is a single attribute
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ |c| }
+            \hline
+            \textbf{Selected Primary Key} \\
+            \hline
+                dateRep, countriesAndTerritories\\
+            \hline
+        \end{tabular}
+        \caption{List of potential candidate keys}
+        \end{table}
+
+\section{Normalisation}
+
+\subsection{EX5}
+The partial dependencies of the table are:
+\begin{itemize}
+    \item dateRep -$>$  day, month, year
+    \item countriesAndTerritories -$>$ geoId, countryterritoryCode, popData2020, continentExp
+\end{itemize}
+These are partial dependencies because firstly; day, month, year do not depend on countriesAndTerritories meaning these attributes don't fully depend
+on the primary key. Secondly, geoId, countryterritoryCode, popData2020, continentExp do not rely on dateRep which is a part of the primary key meaning
+they don't fully depend on the primary key.
+
+\subsection{EX6}
+Using decomposition I broke down the dataset into new relations.
+\newline
+\newline
+I created a new relation for the day, month and year attributes. I kept dateRep as my primary key
+in my original dataset and created a new table with dateRep as my primary key and the decomposed attributes day, month,
+year.
+\newline
+\newline
+\textbf{Date table:} dateRep -$>$  day, month, year
+\newline
+\newline
+I also decomposed my other partial dependency countriesAndTerritories -$>$ geoId, countryterritoryCode,
+popData2020, continentExp. I created a new table with countriesAndTerritories being primary keys in both
+my original table and my new table.
+\newline
+\newline
+\textbf{Country table:} countriesAndTerritories -$>$ geoId, countryterritoryCode,
+popData2020, continentExp
+\newline
+\newline
+The original table is then left with just the primary keys and cases and deaths.
+\newline
+\newline
+\textbf{Dataset:} dateRep, countriesAndTerritories -$>$ cases, deaths
+
+\subsection{EX7}
+
+Transitive dependencies are when non-key attributes depend on other non-key attributes.
+In my tables there are no transitive dependencies. This is because all of my attributes
+depend on my primary keys such as day, month, year all depend on dateRep in the Date table.
+
+\subsection{EX8}
+
+Since there are no transitive dependencies and my table is already in second normal form,
+no further changes are needed to achieve third normal form, this is because it already meets the
+requirements for third normal form.
+
+\subsection{EX9}
+
+To be in Boyce-Codd normal form, every determinant must be a candidate key. In my tables there are 2 determinants,
+dateRep and countriesAndTerritories in the Date table and the Country table respectively. dateRep determines day, month and year.
+Whereas, countriesAndTerritories determine geoId, countryterritoryCode, popData2020 and continentExp. Both of these determinants
+are candidate keys meaning we are in Boyce-Codd normal form.
+
+\section{Modelling}
+
+\subsection{EX10}
+
+\textbf{Steps to creating an SQL version of our dataset:}
+\begin{enumerate}
+    \item Open terminal where SQLite is installed
+    \item 'cd' into the correct folder where you want your SQL file to be
+    \item Launch SQLite and create/open a database by typing the 'sqlite3 dataset.db' command
+    \item You can then create a table labelled 'dataset' using the attributes we used previously. You should also make sure that after each attribute, you define them as NOT NULL so there are no null values in your table.
+    \item Use the command '.mode csv' to set the SQLite output mode to CSV meaning it treats data as if it is in CSV format
+    \item Use the command '.import dataset.csv dataset' to import data from the csv file into the table named dataset
+    \item After importing you can output the imported data to a file using the command '.output dataset.sql' which creates a new SQL file with the values retrieved from the CSV file.
+    \item Finally, you can dump the table using the command '.dump dataset'
+\end{enumerate}
+
+\subsection{EX11}
+
+For EX11, I created the two tables that I decomposed in EX6 and put them into SQL full normalised representation. This included
+my Date table which consisted of dateRep, day, month and year and my other table Country which consisted of countriesAndTerritories, countryterritoryCode, geoId, popData2020 and continentExp.
+
+\lstset{style=code}
+\begin{lstlisting}
+CREATE TABLE Date (
+    dateRep TEXT PRIMARY KEY NOT NULL,
+    day INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    year INTEGER NOT NULL
+);
+
+CREATE TABLE Country (
+    countriesAndTerritories TEXT PRIMARY KEY NOT NULL,
+    geoId TEXT NOT NULL,
+    countryterritoryCode TEXT NOT NULL,
+    popData2020 INTEGER NOT NULL,
+    continentExp TEXT NOT NULL
+);
+\end{lstlisting}
+
+\subsection{EX12}
+
+For EX12, I populated the two new tables I created using the INSERT INTO statement. This allowed me to retrieve
+columns from the dataset table and put it into my new tables.
+
+\begin{lstlisting}
+INSERT INTO Date (dateRep, day, month, year)
+SELECT DISTINCT dateRep, day, month, year
+FROM dataset;
+
+INSERT INTO Country(countriesAndTerritories, geoId, countryterritoryCode, popData2020, continentExp)
+SELECT DISTINCT countriesAndTerritories, geoId, countryterritoryCode, popData2020, continentExp
+FROM dataset;
+\end{lstlisting}
+
+\subsection{EX13}
+
+After running the commands as seen below, I was able to populate a new database with the existing data from the exercises I had just completed.
+
+\begin{lstlisting}
+sqlite3 coronavirus.db < dataset.sql
+sqlite3 coronavirus.db < ex11.sql
+sqlite3 coronavirus.db < ex12.sql
+\end{lstlisting}
+
+\section{Querying}
+
+\subsection{EX14}
+
+In order to find the worldwide total number of cases and deaths, I used the SQL query below.
+What this does is it calculates the sum of the cases and deaths columns from the dataset table and sets the sums as columns total\_cases and total\_deaths.
+
+\begin{lstlisting}
+SELECT SUM(cases) AS total_cases, SUM(deaths) AS total_deaths
+FROM dataset
+\end{lstlisting}
+
+\subsection{EX15}
+
+To find the number of cases by date, in increasing date order, for the United Kingdom, I selected dateRep and cases from the dataset table. I then
+specified all values must have countriesAndTerritories = "United\_Kingdom", I then ordered by year, month, day so it starts from years 2019-2022 and months January to December.
+
+\begin{lstlisting}
+SELECT dateRep, cases
+FROM dataset
+WHERE countriesAndTerritories='United_Kingdom'
+ORDER BY year, month, day ASC;
+\end{lstlisting}
+
+\subsection{EX16}
+
+To find the number of cases and deaths by date, in increasing date order, for each country. I selected dateRep, countriesAndTerritories, cases and deaths
+from  the dataset table and organised my SQL statement by the years, months and days in ascending order.
+
+\begin{lstlisting}
+SELECT countriesAndTerritories, dateRep, cases, deaths
+FROM dataset
+ORDER BY year, month, day;
+\end{lstlisting}
+
+\subsection{EX17}
+
+To find The total number of cases and deaths as a percentage (to 2DP) of the population, for each country. I began by selecting countriesAndTerritories from my Country table and also selected 2 other statements
+I created, this included percentage number of cases and percentage number of deaths. For percentage number of cases I took the SUM of cases of a particular country, CAST it as a real so the sum would be a decimal,
+divided the sum by the popData2020 and multiplied by 100 to make it a percentage. ROUND "100, 2" would round the number to 2 decimal places and I set the statement name AS cases\_percentage.
+
+\begin{lstlisting}
+SELECT Country.countriesAndTerritories,
+ROUND(CAST(SUM(cases)as real) / Country.popData2020 * 100, 2) AS cases_percentage,
+ROUND(CAST(SUM(deaths)as real) / Country.popData2020 * 100, 2) AS deaths_percentage
+FROM dataset
+JOIN Country ON dataset.popData2020 = Country.popData2020
+GROUP BY Country.countriesAndTerritories
+\end{lstlisting}
+
+\subsection{EX18}
+
+To find the descending list of the the top 10 countries by name, by percentage (to 2DP) total deaths out of total cases in that country, I selected the countriesAndTerritories column and created a new column that was made from the SUM of deaths divided by the SUM of cases. ROUND "100, 2" rounds the answer to 2 dp,
+CAST sets the sums to real so they are in a decimal form when the division occurs. I set the name to this new column as deathsToCasesPercentage. I then ordered the results into descending order using DESC and limited the number of results to 10 using LIMIT 10 
+
+\begin{lstlisting}
+SELECT Country.countriesAndTerritories,
+ROUND(CAST(SUM(deaths)as real) / CAST(SUM(cases)as real) * 100, 2) AS deathsToCasesPercentage
+FROM dataset
+JOIN Country ON dataset.popData2020 = Country.popData2020
+GROUP BY Country.countriesAndTerritories
+ORDER BY deathsToCasesPercentage DESC LIMIT 10;
+\end{lstlisting}
+
+\subsection{EX19}
+
+To find the date against a cumulative running total of the number of deaths by day and cases by day for the united kingdom, I first selected the dateRep, then I added two new columns called cumulative\_cases and cumulative\_deaths.
+These added cumulatively added the number of cases and the number of deaths ordered from the years 2019-2022, months January-December and then days. I selected it so that only results from the 'United\_Kingdom' would show up, this info
+came from the table dataset.
+
+\begin{lstlisting}
+SELECT dateRep,
+SUM(cases) OVER (ORDER BY year, month, day) as cumulative_cases,
+SUM(deaths) OVER (ORDER BY year, month, day) as cumulative_deaths
+FROM dataset
+WHERE countriesAndTerritories = 'United_Kingdom'
+ORDER BY year, month, day
+\end{lstlisting}
+
+\end{document}
